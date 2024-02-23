@@ -13,12 +13,19 @@ export class EditorState {
 	}
 }
 
+export interface EditorCursor {
+	selectionStart(): number
+	selectionEnd(): number
+}
+
 // Originator class representing the text editor
 export class TextEditor {
 	private readonly content: EditorContent
+	private readonly cursor: EditorCursor
 
-	constructor(content: EditorContent) {
+	constructor(content: EditorContent, cursor: EditorCursor) {
 		this.content = content;
+		this.cursor = cursor;
 	}
 
 	// Method to create a memento with the current state
@@ -38,5 +45,13 @@ export class TextEditor {
 
 	getContent(): string {
 		return this.content.get();
+	}
+
+	getSelectionStart(): number {
+		return this.cursor.selectionStart()
+	}
+
+	getSelectionEnd(): number {
+		return this.cursor.selectionEnd()
 	}
 }

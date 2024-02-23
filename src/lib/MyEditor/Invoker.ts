@@ -1,5 +1,5 @@
 import type { Command } from './Commands';
-import { EditorState, TextEditor } from '$lib/Editor';
+import { EditorState, TextEditor } from '$lib/MyEditor/Editor';
 
 let stateHistory: EditorState[] = [
 	new EditorState("") // Initial state
@@ -20,18 +20,20 @@ export function executeCommand(command: Command, editor: TextEditor): void {
 }
 
 export function undo(editor: TextEditor): void {
-	console.log(stateHistory, currentIndex)
+	console.log("[Invoker]: Undo")
 	if (currentIndex < 1) return;
 	const memento = stateHistory[currentIndex-1];
-	console.log("memento", memento)
 	editor.restoreState(memento); // Restore the state from the memento
 	currentIndex--;
+	console.log(`[Invoker]: Reverted state to`, memento)
 }
 
 export function redo(editor: TextEditor): void {
+	console.log("[Invoker]: Redo")
 	if (currentIndex + 1 < stateHistory.length) {
 		const memento = stateHistory[currentIndex + 1];
 		editor.restoreState(memento); // Use memento to restore state
 		currentIndex++;
+		console.log(`[Invoker]: Changed state to`, memento)
 	}
 }
