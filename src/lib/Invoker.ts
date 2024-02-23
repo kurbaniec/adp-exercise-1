@@ -1,9 +1,8 @@
 import type { Command } from './Commands';
 import { EditorState, TextEditor } from '$lib/Editor';
 
-// let history: Command[] = [];
 let stateHistory: EditorState[] = [
-	new EditorState("")
+	new EditorState("") // Initial state
 ];
 let currentIndex: number = 0;
 
@@ -11,8 +10,6 @@ let currentIndex: number = 0;
 export function executeCommand(command: Command, editor: TextEditor): void {
 	// Execute the command
 	command.execute(editor);
-	// history = history.slice(0, currentIndex + 1); // Trim "future" history
-	// history.push(command);
 
 	// Save the state
 	const memento = editor.createStateMemento();
@@ -21,19 +18,6 @@ export function executeCommand(command: Command, editor: TextEditor): void {
 
 	currentIndex++;
 }
-
-// export function executeCommand(command: Command, editor: TextEditor): void {
-// 	// Save the current state before executing the command
-// 	const memento = editor.createStateMemento();
-// 	stateHistory = stateHistory.slice(0, currentIndex + 1); // Trim "future" history
-// 	stateHistory.push(memento);
-//
-// 	// Execute the command and update history
-// 	command.execute(editor);
-// 	history = history.slice(0, currentIndex + 1); // Trim "future" history
-// 	history.push(command);
-// 	currentIndex++;
-// }
 
 export function undo(editor: TextEditor): void {
 	console.log(stateHistory, currentIndex)
