@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { executeCommand, undo, redo } from '$lib/MyEditor/Invoker';
-	import { FormattingCommand, HeaderCommand, ListCommand, TextChangedCommand } from '$lib/MyEditor/Commands';
+	import {
+		FormattingMarkerCommand,
+		FormattingSpecialCommand,
+		HeaderCommand,
+		ListCommand,
+		TextChangedCommand
+	} from '$lib/MyEditor/Commands';
 	import { type EditorContent, type EditorCursor, TextEditor } from '$lib/MyEditor/Editor';
 	import type { Writable } from 'svelte/store';
 	import { marked } from 'marked';
 	import { TaskScheduler } from '$lib/MySvelteEditor/TaskScheduler';
 	import { onMount } from 'svelte';
-	import { FormattingMarkers } from '$lib/MyEditor/Constants'
+	import { FormattingMarkers, FormattingSpecial } from '$lib/MyEditor/Constants';
 
 	//region Store textarea & its lifecycle management
 	let textArea: HTMLTextAreaElement
@@ -59,12 +65,16 @@
 		executeCommand(new HeaderCommand(depth), editor)
 	}
 
-	function formatting(marker: string) {
-		executeCommand(new FormattingCommand(marker), editor)
+	function formattingMarker(marker: string) {
+		executeCommand(new FormattingMarkerCommand(marker), editor)
 	}
 
 	function list(ordered: boolean) {
 		executeCommand(new ListCommand(ordered), editor)
+	}
+
+	function formattingSpecial(special: string) {
+		executeCommand(new FormattingSpecialCommand(special), editor)
 	}
 
 	//endregion
@@ -133,13 +143,13 @@
 	{#each Array.from({ length: 4}, (_, i) => i + 1) as number}
 		<button on:click="{() => header(number)}">H{number}</button>
 	{/each}
-	<button on:click={() => formatting(FormattingMarkers.Bold)}><strong>B</strong></button>
-	<button on:click={() => formatting(FormattingMarkers.Italic)}><em>I</em></button>
-	<button on:click={() => formatting(FormattingMarkers.Code)}>Code</button>
+	<button on:click={() => formattingMarker(FormattingMarkers.Bold)}><strong>B</strong></button>
+	<button on:click={() => formattingMarker(FormattingMarkers.Italic)}><em>I</em></button>
+	<button on:click={() => formattingMarker(FormattingMarkers.Code)}>Code</button>
 	<button on:click="{() => list(false)}">Itemize</button>
 	<button on:click="{() => list(true)}">Enumerate</button>
-	<button>Rule</button>
-	<button>Quote</button>
+	<button on:click="{() => formattingSpecial(FormattingSpecial.Rule)}">Rule</button>
+	<button on:click="{() => formattingSpecial(FormattingSpecial.Quote)}">Quote</button>
 </header>
 
 <div class="editor-container">
