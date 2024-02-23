@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { executeCommand, undo, redo } from '$lib/MyEditor/Invoker';
-	import { HeaderCommand, TextChangedCommand } from '$lib/MyEditor/Commands';
+	import { FormattingCommand, HeaderCommand, TextChangedCommand } from '$lib/MyEditor/Commands';
 	import { type EditorContent, type EditorCursor, TextEditor } from '$lib/MyEditor/Editor';
 	import type { Writable } from 'svelte/store';
 	import { marked } from 'marked';
 	import { TaskScheduler } from '$lib/MySvelteEditor/TaskScheduler';
 	import { onMount } from 'svelte';
+	import { FormattingMarkers } from '$lib/MyEditor/Constants'
 
 	//region Store textarea & its lifecycle management
 	let textArea: HTMLTextAreaElement
@@ -55,7 +56,11 @@
 	}
 
 	function header(depth: number) {
-		executeCommand(new HeaderCommand(depth, 1), editor)
+		executeCommand(new HeaderCommand(depth), editor)
+	}
+
+	function formatting(marker: string) {
+		executeCommand(new FormattingCommand(marker), editor)
 	}
 
 	//endregion
@@ -124,9 +129,9 @@
 	{#each Array.from({ length: 4}, (_, i) => i + 1) as number}
 		<button on:click="{() => header(number)}">H{number}</button>
 	{/each}
-	<button><strong>B</strong></button>
-	<button><em>I</em></button>
-	<button>Code</button>
+	<button on:click={() => formatting(FormattingMarkers.Bold)}><strong>B</strong></button>
+	<button on:click={() => formatting(FormattingMarkers.Italic)}><em>I</em></button>
+	<button on:click={() => formatting(FormattingMarkers.Code)}>Code</button>
 	<button>Itemize</button>
 	<button>Enumerate</button>
 	<button>Rule</button>
