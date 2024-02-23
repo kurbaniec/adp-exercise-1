@@ -4,7 +4,7 @@
 	import {
 		FormattingMarkerCommand,
 		FormattingSpecialCommand,
-		HeaderCommand,
+		HeaderCommand, LinkCommand,
 		ListCommand,
 		TextChangedCommand
 	} from '$lib/MyEditor/Commands';
@@ -77,19 +77,32 @@
 		executeCommand(new FormattingSpecialCommand(special), editor)
 	}
 
+	let linkUrlInput: HTMLInputElement
+	let linkValueInput: HTMLInputElement
+	onMount(() => {
+		linkUrlInput.value = "";
+		linkValueInput.value = "";
+	});
+	function link() {
+		const url = linkUrlInput.value
+		const value = linkValueInput.value
+		executeCommand(new LinkCommand(url, value), editor)
+	}
+
 	//endregion
 </script>
 
 <style>
     header {
         display: flex;
+        flex-wrap: wrap; /* Enable wrapping */
         justify-content: flex-start;
         background-color: #f5f5f5;
         padding: 10px;
         border-bottom: 2px solid #e1e1e1;
     }
 
-    button {
+    button, input {
         background-color: #fff;
         border: 1px solid #ddd;
         padding: 5px 10px;
@@ -99,7 +112,7 @@
         font-size: 14px; /* Smaller text size */
     }
 
-    button:hover {
+    button:hover, input:hover {
         background-color: #e1e1e1;
     }
 
@@ -150,6 +163,9 @@
 	<button on:click="{() => list(true)}">Enumerate</button>
 	<button on:click="{() => formattingSpecial(FormattingSpecial.Rule)}">Rule</button>
 	<button on:click="{() => formattingSpecial(FormattingSpecial.Quote)}">Quote</button>
+	<input style="width: 125px;" bind:this={linkUrlInput} placeholder="https://link-url-here.org">
+	<input style="width: 85px;" bind:this={linkValueInput} placeholder="link-value">
+	<button on:click={() => link()}>Link</button>
 </header>
 
 <div class="editor-container">

@@ -95,6 +95,25 @@ export class ListCommand implements Command {
 	}
 }
 
+export class LinkCommand implements Command {
+	private readonly url: string;
+	private readonly value: string
+
+	constructor(url: string, value: string) {
+		this.url = url;
+		this.value = value;
+	}
+
+	execute(textEditor: TextEditor) {
+		const content = textEditor.getContent();
+		const position = textEditor.getSelectionStart();
+		const link = `[${this.value}](${this.url})`
+		const stringWithLink = insertStringAtPosition(content, position, link);
+		textEditor.setContent(stringWithLink);
+		console.log(`[LinkCommand]: Adding link [${link}] at ${position}!`);
+	}
+}
+
 function insertStringAtPosition(text: string, position: number, insertString: string): string {
 	return insertStringsAtPositions(text, [position], [insertString]);
 }
