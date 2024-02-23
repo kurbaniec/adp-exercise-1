@@ -56,36 +56,53 @@ export class FormattingCommand implements Command {
 		const content = textEditor.getContent()
 		const positions = [textEditor.getSelectionStart(), textEditor.getSelectionEnd()]
 		const markers = [this.marker, this.marker]
-		const stringWithMarkers = this.insertStringsAtPositions(content, positions, markers)
+		const stringWithMarkers = insertStringsAtPositions(content, positions, markers)
 		textEditor.setContent(stringWithMarkers)
 		console.log(`[FormattingCommand]: Adding marker [${markers}] at ${positions}!`);
 	}
+}
 
-	insertStringsAtPositions(text: string, positions: number[], insertStrings: string[]): string {
-		// Ensure positions and insertStrings arrays have the same length
-		if (positions.length !== insertStrings.length) {
-			throw new Error("positions and insertStrings arrays must have the same length");
-		}
+export class ListCommand implements Command {
+	private readonly ordered: boolean
 
-		// Sort the positions and strings based on the positions array
-		const sortedIndices = positions
-			.map((value, index) => ({ value, index }))
-			.sort((a, b) => a.value - b.value)
-			.map(data => data.index);
-
-		const sortedPositions = sortedIndices.map(index => positions[index]);
-		const sortedStrings = sortedIndices.map(index => insertStrings[index]);
-
-		// Insert strings at the sorted positions
-		let result = text;
-		let shift = 0; // Tracks the shift in positions due to insertions
-
-		for (let i = 0; i < sortedPositions.length; i++) {
-			const position = sortedPositions[i] + shift; // Adjust position based on shifts from previous insertions
-			result = result.slice(0, position) + sortedStrings[i] + result.slice(position);
-			shift += sortedStrings[i].length; // Update shift for next insertion
-		}
-
-		return result;
+	constructor(ordered: boolean) {
+		this.ordered = ordered
 	}
+
+	execute(textEditor: TextEditor) {
+		const content = textEditor.getContent()
+		const position = textEditor.getSelectionStart()
+		const list = this.ordered ? "\n  1. Item" : "\n  * Item"
+		const stringWithMarkers = insertStringsAtPositions(content, [position], [list])
+		textEditor.setContent(stringWithMarkers)
+		console.log(`[FormattingCommand]: Adding list [${list}] at ${position}!`);
+	}
+}
+
+function insertStringsAtPositions(text: string, positions: number[], insertStrings: string[]): string {
+	// Ensure positions and insertStrings arrays have the same length
+	if (positions.length !== insertStrings.length) {
+		throw new Error("positions and insertStrings arrays must have the same length");
+	}
+
+	// Sort the positions and strings based on the positions array
+	const sortedIndices = positions
+		.map((value, index) => ({ value, index }))
+		.sort((a, b) => a.value - b.value)
+		.map(data => data.index);
+
+	const sortedPositions = sortedIndices.map(index => positions[index]);
+	const sortedStrings = sortedIndices.map(index => insertStrings[index]);
+
+	// Insert strings at the sorted positions
+	let result = text;
+	let shift = 0; // Tracks the shift in positions due to insertions
+
+	for (let i = 0; i < sortedPositions.length; i++) {
+		const position = sortedPositions[i] + shift; // Adjust position based on shifts from previous insertions
+		result = result.slice(0, position) + sortedStrings[i] + result.slice(position);
+		shift += sortedStrings[i].length; // Update shift for next insertion
+	}
+
+	return result;
 }

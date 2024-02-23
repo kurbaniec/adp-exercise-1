@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { writable } from 'svelte/store';
 	import { executeCommand, undo, redo } from '$lib/MyEditor/Invoker';
-	import { FormattingCommand, HeaderCommand, TextChangedCommand } from '$lib/MyEditor/Commands';
+	import { FormattingCommand, HeaderCommand, ListCommand, TextChangedCommand } from '$lib/MyEditor/Commands';
 	import { type EditorContent, type EditorCursor, TextEditor } from '$lib/MyEditor/Editor';
 	import type { Writable } from 'svelte/store';
 	import { marked } from 'marked';
@@ -61,6 +61,10 @@
 
 	function formatting(marker: string) {
 		executeCommand(new FormattingCommand(marker), editor)
+	}
+
+	function list(ordered: boolean) {
+		executeCommand(new ListCommand(ordered), editor)
 	}
 
 	//endregion
@@ -132,8 +136,8 @@
 	<button on:click={() => formatting(FormattingMarkers.Bold)}><strong>B</strong></button>
 	<button on:click={() => formatting(FormattingMarkers.Italic)}><em>I</em></button>
 	<button on:click={() => formatting(FormattingMarkers.Code)}>Code</button>
-	<button>Itemize</button>
-	<button>Enumerate</button>
+	<button on:click="{() => list(false)}">Itemize</button>
+	<button on:click="{() => list(true)}">Enumerate</button>
 	<button>Rule</button>
 	<button>Quote</button>
 </header>
