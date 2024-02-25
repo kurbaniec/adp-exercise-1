@@ -40,7 +40,7 @@ In today's digital world, simplicity is key. That's why we decided to develop a 
 
 A user interface displays a text area and buttons for formatting options. Clicking a button applies the chosen formatting to the text. Behind the scenes, design patterns ensure smooth interaction and undo capability.
 
-![System Architecture](\.img\uml-diagram.png)
+![System Architecture](/.img/uml-diagram.png)
 
 In this system, the *Invoker* is responsible for receiving and executing user inputs by creating and executing *Commands*. Before executing each *Command*, the *Invoker* saves the current state of the *TextEditor* as an *EditorContent* using the Memento pattern. This allows for undo and redo functionality, as the system can revert to previous states of the *TextEditor*.
 
