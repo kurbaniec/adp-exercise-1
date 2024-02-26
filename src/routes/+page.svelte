@@ -10,7 +10,7 @@
 
 <div class="minimalist-text">
 	<h3>MyEditor</h3>
-	<!-- Facade for simple usage of "MyEditor" lub -->
+	<!-- Facade for simple usage of "MyEditor" lib -->
 	<MySvelteEditor/>
 </div>
 

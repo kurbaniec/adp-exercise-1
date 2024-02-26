@@ -36,7 +36,6 @@
 	const text: Writable<string> = writable(''); // Current text
 	const textContent = new class implements EditorContent {
 		get(): string { return $text; }
-
 		set(content: string): void { $text = content; }
 	};
 	const cursor = new class implements EditorCursor {
